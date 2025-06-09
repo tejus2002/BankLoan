@@ -1,0 +1,75 @@
+﻿@model IEnumerable<BankLoanProject.Models.Entities.Customer>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Identity Proof</th>
+            <th>Address</th>
+            <th>Identity Type</th>
+            <th>KYC Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.Name</td>
+                <td>@customer.Email</td>
+                <td>@customer.Phone</td>
+                @* <td>@customer.DateOfBirth.ToShortDateString()</td> *@
+                <td>
+                    <a href="@customer.DocumentPath" target="_blank">View Document</a>
+                </td>
+                <td>@customer.Address</td>
+                <td>@customer.IdentityType</td>
+                <td>@customer.KycStatus</td>
+                <td>
+                    <button class="btn btn-warning" onclick="openEditModal(@customer.CustomerId)">Edit</button>
+                    <form asp-action="Delete" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@customer.CustomerId" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this customer?');">
+                            @* <i class="bi bi-trash"></i> *@
+                            Delete
+                        </button>
+                    </form>
+                    <form asp-action="Verify" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@customer.CustomerId" />
+                        <button type="submit" class="btn btn-success">
+                            Verify
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- Form will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openEditModal(id) {
+          $.get('/Customer/Edit/' + id, function (data) {
+            $('#editModalBody').html(data);
+            $('#editModal').modal('show');
+          });
+        }
+    </script>
+}

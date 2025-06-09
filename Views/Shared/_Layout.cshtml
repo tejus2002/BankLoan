@@ -1,0 +1,188 @@
+﻿﻿@{
+    var role = Context.Session.GetString("Role");
+    var adminId = Context.Session.GetInt32("AdminId");
+    var customerId = Context.Session.GetInt32("CustomerId");
+    var customerName = Context.Session.GetString("CustomerName");
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BankLoanProject</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BankLoanProject.styles.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #16a085;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #1abc9c;
+            --primary-gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --secondary-gradient: linear-gradient(135deg, var(--secondary), var(--accent));
+            --success-gradient: linear-gradient(135deg, var(--success), var(--info));
+            --warning-gradient: linear-gradient(135deg, var(--warning), #f1c40f);
+            --danger-gradient: linear-gradient(135deg, var(--danger), #c0392b);
+            --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar - Same as Admin Dashboard */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: var(--shadow-md);
+            padding: 1rem 0;
+            margin-bottom: 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+            .nav-link:hover {
+                color: white !important;
+                background: rgba(255,255,255,0.2);
+                transform: translateY(-2px);
+            }
+
+    </style>
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                @if (role == "Admin")
+                {
+                    <a class="navbar-brand" href="#">
+                        <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+                    </a>
+                }
+                else if (role == "Customer")
+                {
+                    <a class="navbar-brand" href="#">
+                        <i class="fas fa-user-shield me-2"></i>Customer Dashboard
+                    </a>
+                }
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (role == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Customer" asp-action="CustomerTable"><i class="fas fa-users me-1"></i>Customer Details</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Customer" asp-action="CustomerProfile"><i class="fas fa-users me-1"></i>Home</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="LoanProduct" asp-action="Index"><i class="fas fa-credit-card me-1"></i>Loan Product</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="LoanApplication" asp-action="Application"><i class="fas fa-file-alt me-1"></i>Application</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Disbursement" asp-action="DisburseLoan"><i class="fas fa-money-check-alt me-1"></i>Disbursement</a>
+                        </li>
+                        @if(role=="Admin")
+                        {
+                        <li class="nav-item">
+                                <a class="nav-link" asp-controller="Repayment" asp-action="Admin"><i class="fas fa-receipt me-1"></i>Repayment</a>
+                        </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Repayment" asp-action="Customer"><i class="fas fa-receipt me-1"></i>Repayment</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Report" asp-action="Report"><i class="fas fa-chart-bar me-1"></i>Report</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center ms-auto">
+                        @if (role == "Customer" || role == "Admin")
+                        {
+                            <span class="text-white me-3">
+                                <i class="fas fa-user-circle me-1"></i>
+                                @customerName (@customerId)
+                            </span>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                            </form>
+                        }
+                        else{
+                            <span class="text-white me-3">
+                                <i class="fas fa-user-circle me-1"></i>
+                                 @adminId
+                            </span>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                            </form>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - BankLoanProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

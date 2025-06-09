@@ -1,0 +1,100 @@
+﻿@model List<BankLoanProject.Models.RepaymentScheduleViewModel>
+<h3 class="mt-5">Check Outstanding Balance</h3>
+
+<form asp-action="GetOutstandingBalance" asp-controller="Repayment" method="get" class="row g-3">
+    <div class="col-auto">
+        <label for="loanId" class="visually-hidden">Loan ID</label>
+        <input type="number" class="form-control" name="loanId" placeholder="Enter Loan ID" required />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-info mb-3">Get Balance</button>
+    </div>
+</form>
+
+@if (ViewBag.OutstandingBalance != null)
+{
+    <div class="alert alert-info mt-3">
+        <strong>Loan ID:</strong> @ViewBag.LoanId<br />
+        <strong>Outstanding Balance:</strong> @((decimal)ViewBag.OutstandingBalance)
+
+    </div>
+}
+
+<h2>Repayment Schedule</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>RepaymentId</th>
+            <th>LoanId</th>
+            <th>ProductType</th>
+            <th>ProductName</th>
+            <th>DueDate</th>
+            <th>AmountDue</th>
+            <th>PaymentDate</th>
+            <th>PaymentStatus</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RepaymentId</td>
+                <td>@item.LoanId</td>
+                <td>@item.ProductType</td>
+                <td>@item.ProductName</td>
+                <td>@item.DueDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.AmountDue</td>
+                <td>@item.PaymentDate?.ToString("yyyy-MM-dd")</td>
+                <td>@item.PaymentStatus</td>
+                <td>
+                    @if (item.PaymentStatus != "PAID")
+                    {
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal"
+                                data-repayment-id="@item.RepaymentId" data-amount="@item.AmountDue">
+                            Pay
+                        </button>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Paid</span>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="paymentForm" method="post" asp-action="Pay" asp-controller="Repayment">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="repaymentId" id="repaymentId" />
+                <label for="paymentMethod">Payment Method</label>
+                <select id="paymentMethod" class="form-select" required>
+                    <option value="">-- Select --</option>
+                    <option value="UPI">UPI</option>
+                    <option value="NetBanking">Net Banking</option>
+                    <option value="Card">Credit/Debit Card</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Confirm Payment</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const paymentModal = document.getElementById('paymentModal');
+        paymentModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const repaymentId = button.getAttribute('data-repayment-id');
+            document.getElementById('repaymentId').value = repaymentId;
+        });
+    });
+</script>
+
+

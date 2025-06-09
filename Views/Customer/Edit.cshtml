@@ -1,0 +1,57 @@
+﻿@{
+    Layout = null;
+}
+@model BankLoanProject.Models.EditCustomerViewModel
+
+<form asp-controller="Customer" asp-action="Edit" method="post" id="editForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="CustomerId" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone"></label>
+        <input asp-for="Phone" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DateOfBirth"></label>
+        <input asp-for="DateOfBirth" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="IdentityType"></label>
+        <input asp-for="IdentityType" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="KycStatus"></label>
+        <select asp-for="KycStatus" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script>
+    $('#editForm').submit(function (e) {
+      e.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: '/Customer/Edit',
+        data: $(this).serialize(),
+        success: function () {
+          $('#editModal').modal('hide');
+          location.reload(); // Refresh dashboard to reflect changes
+        }
+      });
+    });
+</script>
+

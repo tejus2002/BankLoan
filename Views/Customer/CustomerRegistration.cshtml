@@ -1,0 +1,87 @@
+﻿@model BankLoanProject.Models.CustomerViewModel
+
+<div class="d-flex justify-content-start mb-3">
+    <button class="btn btn-outline-secondary" onclick="goBack()">
+        ← Back
+    </button>
+</div>
+
+@{
+    ViewBag.Title = "Customer Registration";
+    Layout = null;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (ViewBag.Success != null)
+{
+    <div class="alert alert-success">@ViewBag.Success</div>
+}
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<form asp-controller="Customer" asp-action="CustomerRegistration" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Phone" class="control-label"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DateOfBirth" class="control-label"></label>
+        <input asp-for="DateOfBirth" class="form-control" type="date" />
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Address" class="control-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IdentityType" class="control-label"></label>
+        <select asp-for="IdentityType" class="form-select" asp-items="ViewBag.IdentityTypes">
+            <option value="">Select Identity Document</option>
+        </select>
+        <span asp-validation-for="IdentityType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" class="form-control" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IdentityProof" class="control-label">Identity Proof</label>
+        <input asp-for="IdentityProof" type="file" class="form-control" />
+        <span asp-validation-for="IdentityProof" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Register" class="btn btn-primary" />
+    </div>
+</form>
+@section Scripts {
+
+        function goBack() {
+                window.history.back();
+            }
+
+}
+
